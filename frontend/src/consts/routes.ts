@@ -1,6 +1,8 @@
-export const routes = {
+const routes = {
   login: "/login",
   register: "/register",
   dashboard: "/dashboard",
-  notFound: "*"
-}
+  notFound: "*",
+};
+
+export default routes;

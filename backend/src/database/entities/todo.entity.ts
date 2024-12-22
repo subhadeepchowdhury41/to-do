@@ -1,28 +1,36 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { User } from "./user.entity";
-
-export enum Status {
-  TODO = "TODO",
-  IN_PROGRESS = "IN_PROGRESS",
-  DONE = "DONE",
-}
+import { TaskStatus } from "../../core/types";
 
 @Entity()
 export class Todo {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ nullable: false })
   title!: string;
 
-  @Column()
-  description!: string;
+  @Column({ nullable: true })
+  description?: string;
 
   @Column({
     type: "enum",
-    enum: Status,
+    enum: TaskStatus,
+    default: TaskStatus.TODO,
   })
-  status!: Status;
+  status!: TaskStatus;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @Column()
+  duedate!: Date;
 
   @ManyToOne(() => User, (user) => user.todos)
   user!: User;
