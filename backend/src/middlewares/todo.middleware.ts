@@ -15,6 +15,7 @@ export const isValidCreateTodoDto = async (
   try {
     const createTodoDto = Object.assign(new CreateTodoDto(), req.body);
     const errors = await validate(createTodoDto);
+    console.log(errors);
     if (errors.length > 0) {
       throw new APIerror(StatusCodes.BAD_REQUEST, "Validation error", errors);
     }
@@ -58,6 +59,7 @@ export const isValidTodoId = async (
     req.body = {
       ...req.body,
       mutated: {
+        ...req.body.mutated,
         todo,
       },
     };

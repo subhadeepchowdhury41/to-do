@@ -8,5 +8,6 @@ export const sendErrorResponse = (
   return res.status(error.status || StatusCodes.INTERNAL_SERVER_ERROR).send({
     status: error.status || StatusCodes.INTERNAL_SERVER_ERROR,
     message: error.message,
+    errors: error.errors,
   });
 };

@@ -32,6 +32,7 @@ export const isValidAccessToken = async (
     req.body = {
       ...req.body,
       mutated: {
+        ...req.body.mutated,
         user,
       },
     };
@@ -72,6 +73,7 @@ export const isValidRefreshToken = async (
     req.body = {
       ...req.body,
       mutated: {
+        ...req.body.mutated,
         user,
         refreshTokenId,
       },

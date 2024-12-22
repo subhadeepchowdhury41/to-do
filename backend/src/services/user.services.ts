@@ -2,6 +2,11 @@ import { DeepPartial } from "typeorm";
 import { userRepo } from "../database";
 import { User } from "../database/entities/user.entity";
 
+export const getUsers = async () => {
+  const users = await userRepo.find();
+  return users;
+};
+
 export const getUserByEmail = async (email: string) => {
   const user = await userRepo.findOne({ where: { email } });
   return user;
@@ -18,9 +23,9 @@ export const createUser = async (user: DeepPartial<User>) => {
 };
 
 export const changePassword = async (id: string, password: string) => {
-  await userRepo.update({ id }, { password });
+  return await userRepo.update({ id }, { password });
 };
 
 export const updateUser = async (id: string, updates: DeepPartial<User>) => {
-  await userRepo.update({ id }, updates);
+  return await userRepo.update({ id }, updates);
 };

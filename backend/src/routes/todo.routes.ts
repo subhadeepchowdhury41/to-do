@@ -6,6 +6,7 @@ import {
   isValidCreateTodoDto,
   isValidTodoId,
 } from "../middlewares/todo.middleware";
+import { sendErrorResponse } from "../utils/helper/errorResposne";
 
 const router = Router();
 
@@ -14,7 +15,7 @@ router.get("/", isValidAccessToken, async (req, res) => {
     const result = await todoController.getTodos(req.body.mutated.user);
     res.status(result.status).send(result);
   } catch (error: any) {
-    res.status(error.status || StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    sendErrorResponse(res, error);
   }
 });
 
@@ -26,19 +27,17 @@ router.post("/", isValidAccessToken, isValidCreateTodoDto, async (req, res) => {
     );
     res.status(result.status).send(result);
   } catch (error: any) {
-    res.status(error.status || StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    sendErrorResponse(res, error);
   }
 });
 
 router.put("/:todoId", isValidAccessToken, isValidTodoId, async (req, res) => {
   try {
-    const result = await todoController.updateTodo(
-      req.body,
-      req.body.mutated.user
-    );
+    const { mutated, ...updates } = req.body;
+    const result = await todoController.updateTodo(req.params.todoId, updates);
     res.status(result.status).send(result);
   } catch (error: any) {
-    res.status(error.status || StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+    sendErrorResponse(res, error);
   }
 });
 
@@ -51,7 +50,7 @@ router.delete(
       const result = await todoController.deleteTodo(req.params.todoId);
       res.status(result.status).send(result);
     } catch (error: any) {
-      res.status(error.status || StatusCodes.INTERNAL_SERVER_ERROR).send(error);
+      sendErrorResponse(res, error);
     }
   }
 );

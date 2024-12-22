@@ -30,8 +30,9 @@ export const updateTodo = async (id: string, todo: UpdateTodoDto) => {
   });
 };
 
-
 export const deleteTodo = async (id: string) => {
-  await todoServices.deleteTodo(id);
-  return new APISuccess(StatusCodes.OK, "Todo deleted successfully");
+  const deletedTodo = await todoServices.deleteTodo(id);
+  return new APISuccess(StatusCodes.OK, "Todo deleted successfully", {
+    todo: deletedTodo,
+  });
 };

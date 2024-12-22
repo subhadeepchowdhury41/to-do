@@ -1,4 +1,4 @@
-import { IsDate, IsEnum, IsOptional, IsString } from "class-validator";
+import { IsDate, IsDateString, IsEnum, IsOptional, IsString } from "class-validator";
 import { TaskStatus } from "../core/types";
 
 export class CreateTodoDto {
@@ -11,6 +11,6 @@ export class CreateTodoDto {
   @IsEnum(TaskStatus)
   status?: TaskStatus
 
-  @IsDate()
+  @IsDateString()
   duedate!: Date;
 }

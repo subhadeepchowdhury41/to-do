@@ -4,5 +4,6 @@ export class APIerror extends Error {
   constructor(status: number, message: string, errors?: any) {
     super(message);
     this.status = status;
+    this.errors = errors;
   }
 }

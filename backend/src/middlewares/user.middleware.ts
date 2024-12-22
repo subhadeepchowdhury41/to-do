@@ -20,6 +20,7 @@ export const isRegisteredEmail = async (
     req.body = {
       ...req.body,
       mutated: {
+        ...req.body.mutated,
         user,
       },
     };
@@ -63,6 +64,7 @@ export const isValidUser = async (
     req.body = {
       ...req.body,
       mutated: {
+        ...req.body.mutated,
         user,
       },
     }

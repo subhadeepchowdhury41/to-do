@@ -10,5 +10,5 @@ export const getFreshTokenIdByToken = async (token: string) => {
 };
 
 export const deleteRefreshToken = async (refreshTokenId: string) => {
-  await refreshTokenRepo.delete(refreshTokenId);
+  return await refreshTokenRepo.delete(refreshTokenId);
 };

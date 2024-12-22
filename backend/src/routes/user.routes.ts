@@ -5,28 +5,44 @@ import {
   isValidUser,
 } from "../middlewares/user.middleware";
 import { isValidPassword } from "../middlewares/auth.middleware";
+import { sendErrorResponse } from "../utils/helper/errorResposne";
 
 const router = Router();
 
-router.put("/:userId", isValidUpdateUserDto, isValidUser, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const result = await userController.updateUser(req.params.userId, req.body);
+    const result = await userController.getUsers();
     res.status(result.status).send(result);
   } catch (error: any) {
-    res.status(error.status || 500).send(error);
+    sendErrorResponse(res, error);
   }
 });
 
-router.put("/:userId/change-password", isValidUpdateUserDto, isValidUser, isValidPassword, async (req, res) => {
+router.put("/:userId", isValidUpdateUserDto, isValidUser, async (req, res) => {
   try {
-    const result = await userController.changePassword(
-      req.params.userId,
-      req.body.password
-    );
+    const { mutated, ...updates } = req.body;
+    const result = await userController.updateUser(req.params.userId, updates);
     res.status(result.status).send(result);
   } catch (error: any) {
-    res.status(error.status || 500).send(error);
+    sendErrorResponse(res, error);
   }
 });
+
+router.put(
+  "/:userId/change-password",
+  isValidUser,
+  isValidPassword,
+  async (req, res) => {
+    try {
+      const result = await userController.changePassword(
+        req.params.userId,
+        req.body.newPassword
+      );
+      res.status(result.status).send(result);
+    } catch (error: any) {
+      sendErrorResponse(res, error);
+    }
+  }
+);
 
 export default router;

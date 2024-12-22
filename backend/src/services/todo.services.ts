@@ -19,9 +19,9 @@ export const getTodoById = async (id: string) => {
 };
 
 export const updateTodo = async (id: string, updates: DeepPartial<Todo>) => {
-  await todoRepo.update(id, updates);
+  return await todoRepo.update(id, updates);
 };
 
 export const deleteTodo = async (id: string) => {
-  await todoRepo.delete({ id });
+  return await todoRepo.delete({ id });
 };

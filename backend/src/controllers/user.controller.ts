@@ -5,6 +5,11 @@ import { hashPassword } from "../utils/encrypt";
 import { APISuccess } from "../utils/api.success";
 import { StatusCodes } from "http-status-codes";
 
+export const getUsers = async () => {
+  const users = await userService.getUsers();
+  return new APISuccess(StatusCodes.OK, "Users fetched successfully", users);
+}
+
 export const updateUser = async (id: string, updates: DeepPartial<User>) => {
   const updatedUser = await userService.updateUser(id, updates);
   return new APISuccess(
