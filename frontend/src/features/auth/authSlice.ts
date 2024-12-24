@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import { AppRestAPI } from "../../api";
 
 interface AuthState {
   user: User | null;
@@ -20,10 +20,16 @@ interface LoginCredentials {
   password: string;
 }
 
+interface SignupPayload {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const initialState: AuthState = {
   user: null,
   token: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 
@@ -32,12 +38,38 @@ export const loginThunk = createAsyncThunk(
   "auth/login",
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post("/auth/login", credentials);
-      localStorage.setItem("access_token", response.data.access_token);
-      localStorage.setItem("refresh_token", response.data.refresh_token);
-      return response.data; // { user, access_token, refresh_token }
+      console.log(credentials);
+      const response = await AppRestAPI.auth.login(credentials);
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+      console.log(response.data);
+      return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
+  }
+);
+
+export const meThunk = createAsyncThunk(
+  "auth/me",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await AppRestAPI.auth.me();
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Me failed");
+    }
+  }
+);
+
+export const signupThunk = createAsyncThunk(
+  "auth/signup",
+  async (payload: SignupPayload, { rejectWithValue }) => {
+    try {
+      const response = await AppRestAPI.auth.signup(payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || "Signup failed");
     }
   }
 );
@@ -46,9 +78,9 @@ export const logoutThunk = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.post("/auth/logout");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
+      await AppRestAPI.auth.logout();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       return null;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Logout failed");
@@ -88,6 +120,17 @@ const authSlice = createSlice({
       .addCase(logoutThunk.fulfilled, (state) => {
         state.user = null;
         state.token = null;
+      })
+      .addCase(meThunk.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(meThunk.fulfilled, (state, action: PayloadAction<User>) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(meThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

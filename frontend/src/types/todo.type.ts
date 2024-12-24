@@ -1,9 +1,9 @@
 export interface Todo {
-  id: string;
+  id?: string;
   title: string;
-  description: string;
-  status: string;
-  user: string;
-  createdAt: Date;
+  description?: string;
+  status: "TODO" | "DONE" | "IN_PROGRESS";
+  user?: string;
+  createdAt?: Date;
   duedate: Date;
 }

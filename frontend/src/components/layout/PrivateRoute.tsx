@@ -1,35 +1,21 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-// src/components/Layout/PrivateRoute.tsx
-import React, { useEffect } from "react";
+import React from "react";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import routes from "../../consts/routes";
+import { Navigate } from "react-router-dom";
 
 interface PrivateRouteProps {
   children: React.ReactElement;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const user = useAppSelector((state) => state.auth.user);
-  const isAuthenticated = !!user;
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setTimeout(() => {
-        window.location.href = routes.login;
-      }, 1000);
-    }
-  }, []);
-
-  if (!isAuthenticated) {
-    return (
-      <div>
-        <h1>Unauthorized</h1>
-        <p>You are not logged in.</p>
-        <p>You will be redirected to the login page.</p>
-      </div>
-    );
+  const auth = useAppSelector((state) => state.auth);
+  const isAuthenticated = !!auth.user;
+  if (auth.loading) {
+    return <div>Loading...</div>;
   }
-
+  if (!isAuthenticated) {
+    return <Navigate to={routes.login} replace={true} />;
+  }
   return children;
 };
 

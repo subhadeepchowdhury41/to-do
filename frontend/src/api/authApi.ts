@@ -1,6 +1,6 @@
 import axiosInstance from "../utils/axiosInstance";
 
-export const login = async ({
+const login = async ({
   email,
   password,
 }: {
@@ -11,15 +11,16 @@ export const login = async ({
     email,
     password,
   });
+  console.log(response.data);
   return response.data;
 };
 
-export const me = async () => {
+const me = async () => {
   const response = await axiosInstance.get("/auth/me");
   return response.data;
-}
+};
 
-export const signup = async ({
+const signup = async ({
   name,
   email,
   password,
@@ -36,7 +37,14 @@ export const signup = async ({
   return response.data;
 };
 
-export const logout = async () => {
+const logout = async () => {
   const response = await axiosInstance.post("/auth/logout");
   return response.data;
+};
+
+export default {
+  login,
+  me,
+  signup,
+  logout,
 };
