@@ -17,6 +17,7 @@ import { DateCalendar } from "@mui/x-date-pickers";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { updateTodoThunk } from "../../features/todo/todoSlice";
 import { enqueueSnackbar } from "notistack";
+import dayjs from "dayjs";
 
 const TodoListItem = ({ todo }: { todo: Todo }) => {
   const dispatch = useAppDispatch();
@@ -176,7 +177,10 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
           Change Due Date
         </Typography>
         <Divider sx={{ marginX: 1 }} />
-        <DateCalendar onChange={handleDuedateChange} />
+        <DateCalendar
+          defaultValue={dayjs(todo.duedate)}
+          onChange={handleDuedateChange}
+        />
         <Box sx={{ display: "flex", justifyContent: "flex-end", marginX: 1 }}>
           <Button
             variant="contained"
