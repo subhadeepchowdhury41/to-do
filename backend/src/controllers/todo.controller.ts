@@ -19,7 +19,7 @@ export const createTodo = async (todo: CreateTodoDto, user: User) => {
     user,
   });
   return new APISuccess(StatusCodes.CREATED, "Todo created successfully", {
-    todo: createdTodo,
+    ...createdTodo,
   });
 };
 

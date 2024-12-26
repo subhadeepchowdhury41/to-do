@@ -13,6 +13,7 @@ export const login = async (user: User) => {
   const refreshToken = generateRefreshToken(user.id);
   await authServices.storeRefreshToken(user, refreshToken);
   return new APISuccess(StatusCodes.OK, "Loggin Successful", {
+    user,
     accessToken,
     refreshToken,
   });
@@ -25,8 +26,10 @@ export const signup = async (signUpDto: SignUpDto) => {
     const accessToken = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
     await authServices.storeRefreshToken(user, refreshToken);
+    const { password: pass, ...userToSend } = user;
     console.log(accessToken, refreshToken, user);
     return new APISuccess(StatusCodes.OK, "Signup Successful", {
+      user: userToSend,
       accessToken,
       refreshToken,
     });

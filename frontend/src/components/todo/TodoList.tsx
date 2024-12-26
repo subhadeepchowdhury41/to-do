@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { fetchTodos } from "../../features/todo/todoSlice";
+import { Box } from "@mui/material";
+import TodoListItem from "./TodoListItem";
 
 const TodoList = () => {
   const dispatch = useAppDispatch();
@@ -11,16 +13,13 @@ const TodoList = () => {
   }, [dispatch]);
   return (
     <>
-      <h1>Todo List</h1>
-      <p>This is the todo list page.</p>
-      <div>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      >
         {todos.map((todo, index: number) => (
-          <div key={index}>
-            <h3>{todo.title}</h3>
-            <p>{todo.description}</p>
-          </div>
+          <TodoListItem key={index} todo={todo} />
         ))}
-      </div>
+      </Box>
     </>
   );
 };

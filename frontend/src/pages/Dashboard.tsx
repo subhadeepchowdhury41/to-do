@@ -1,17 +1,33 @@
-import { CreateTodoForm } from "../components/todo/CreateTodoForm";
+import AppDrawer from "../components/layout/Drawer/AppDrawer";
+import AppNavbar from "../components/layout/Appbar/AppNavbar";
 import TodoList from "../components/todo/TodoList";
-import AppEditor from "../components/ui/AppEditor";
+import { Box, Fab } from "@mui/material";
+import { appDrawerWidth, appNavbarHeight } from "../utils/theme";
+import { Add } from "@mui/icons-material";
 
 const Dashboard = () => {
   return (
     <>
-      <h1>Dashboard</h1>
-      <p>This is the dashboard page.</p>
-      <CreateTodoForm />
-      <TodoList />
-      <div style={{ height: "50vh", width: "100%" }}>
-        <AppEditor />
-      </div>
+      <AppDrawer />
+      <AppNavbar />
+      <Box
+        sx={{
+          marginTop: `${appNavbarHeight}px`,
+          marginLeft: `${appDrawerWidth}px`,
+          minHeight: `calc(100vh - ${appNavbarHeight}px)`,
+          backgroundColor: "background.paper",
+        }}
+      >
+        <TodoList />
+      </Box>
+      <Fab
+        title="Add Todo"
+        variant="circular"
+        color="primary"
+        sx={{ position: "fixed", bottom: 30, right: 30 }}
+      >
+        <Add />
+      </Fab>
     </>
   );
 };

@@ -3,6 +3,7 @@ import {
   EditorContent,
   BubbleMenu,
   FloatingMenu,
+  JSONContent,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { IconButton, Paper, Container, Divider, Tooltip } from "@mui/material";
@@ -13,11 +14,19 @@ import {
   FormatListBulleted,
   FormatQuote,
 } from "@mui/icons-material";
+import "./editor.css";
 
-const content =
-  "<p>Hello World! Select this text to see the bubble menu, or click an empty area to see the floating menu.</p>";
-
-const MenuButton = ({ onClick, children, title, active }: any) => (
+const MenuButton = ({
+  onClick,
+  children,
+  title,
+  active,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+  title: string;
+  active: boolean;
+}) => (
   <Tooltip title={title}>
     <IconButton
       onClick={onClick}
@@ -29,10 +38,15 @@ const MenuButton = ({ onClick, children, title, active }: any) => (
   </Tooltip>
 );
 
-const AppEditor = () => {
+const AppEditor = (initialValue?: JSONContent) => {
   const editor = useEditor({
-    content,
+    content: initialValue,
     extensions: [StarterKit],
+    editorProps: {
+      attributes: {
+        class: "editor",
+      },
+    },
   });
 
   if (!editor) return null;
@@ -74,12 +88,14 @@ const AppEditor = () => {
       ) : (
         <>
           <MenuButton
+            active={editor.isActive("bold")}
             title="Bullet List"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
           >
             <FormatListBulleted fontSize="small" />
           </MenuButton>
           <MenuButton
+            active={editor.isActive("blockquote")}
             title="Quote"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
           >
@@ -93,8 +109,7 @@ const AppEditor = () => {
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Paper elevation={2} sx={{ p: 2 }}>
-        <EditorContent editor={editor} style={{ minHeight: 200 }} />
-
+        <EditorContent editor={editor} />
         <Divider sx={{ my: 2 }} />
 
         <FloatingMenu editor={editor}>

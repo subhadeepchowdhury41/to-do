@@ -29,8 +29,9 @@ router.post(
 );
 
 router.get("/me", isValidAccessToken, (req, res) => {
+  const { password, ...user } = req.body.mutated.user;
   try {
-    res.status(StatusCodes.OK).send({ user: req.body.mutated.user });
+    res.status(StatusCodes.OK).send({ data: user });
   } catch (error: any) {
     sendErrorResponse(res, error);
   }

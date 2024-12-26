@@ -8,6 +8,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useAppDispatch } from "./hooks/useAppDispatch";
 import { useEffect } from "react";
 import { meThunk } from "./features/auth/authSlice";
+import { AppThemeProvider } from "./hooks/useAppTheme";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -17,9 +18,11 @@ const App = () => {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <SnackbarProvider maxSnack={3}>
-          <RouterProvider router={router} />
-        </SnackbarProvider>
+        <AppThemeProvider>
+          <SnackbarProvider maxSnack={3}>
+            <RouterProvider router={router} />
+          </SnackbarProvider>
+        </AppThemeProvider>
       </LocalizationProvider>
     </>
   );
