@@ -23,7 +23,7 @@ const AppNavbar = () => {
         }}
       >
         <Toolbar>
-          <Typography variant="h6" flexGrow={1} noWrap component="div">
+          <Typography variant="h6" flexGrow={1} noWrap color="textPrimary" component="div">
             Todo App
           </Typography>
           <Box

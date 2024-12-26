@@ -43,6 +43,34 @@ export const createTodoThunk = createAsyncThunk(
   }
 );
 
+export const updateTodoThunk = createAsyncThunk(
+  "todos/updateTodo",
+  async (todo: Partial<Todo>, { rejectWithValue }) => {
+    try {
+      const response = await AppRestAPI.todo.updateTodo(todo);
+      return response.data ? todo : {};
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update todo"
+      );
+    }
+  }
+);
+
+export const deleteTodoThunk = createAsyncThunk(
+  "todos/deleteTodo",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await AppRestAPI.todo.deleteTodo(id);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete todo"
+      );
+    }
+  }
+);
+
 const todoSlice = createSlice({
   name: "todos",
   initialState,
@@ -73,6 +101,44 @@ const todoSlice = createSlice({
         }
       )
       .addCase(createTodoThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateTodoThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateTodoThunk.fulfilled,
+        (state, action: PayloadAction<Partial<Todo>>) => {
+          console.log(action.payload);
+          state.loading = false;
+          const index = state.todos.findIndex(
+            (todo) => todo.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.todos[index] = { ...state.todos[index], ...action.payload };
+          }
+        }
+      )
+      .addCase(updateTodoThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteTodoThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteTodoThunk.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.loading = false;
+          state.todos = state.todos.filter(
+            (todo) => todo.id !== action.payload
+          );
+        }
+      )
+      .addCase(deleteTodoThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

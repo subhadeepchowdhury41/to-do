@@ -23,7 +23,7 @@ const todoLightTheme = createTheme({
       main: "#FF5252", // Coral Red for error states
     },
     success: {
-      main: "#8BC34A", // Light Green for success
+      main: "#8BC34A",
     },
     divider: "#E0E0E0", // Soft gray for dividers
     grey: {
@@ -76,7 +76,7 @@ const todoLightTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "8px", // Rounded buttons
+          borderRadius: "4px", // Rounded buttons
           textTransform: "none", // Disable uppercase text
         },
         containedPrimary: {
@@ -168,7 +168,7 @@ const todoDarkTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "8px", // Rounded buttons
+          borderRadius: "4px", // Rounded buttons
           textTransform: "none", // Disable uppercase text
         },
         containedPrimary: {

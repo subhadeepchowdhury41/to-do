@@ -4,8 +4,13 @@ import TodoList from "../components/todo/TodoList";
 import { Box, Fab } from "@mui/material";
 import { appDrawerWidth, appNavbarHeight } from "../utils/theme";
 import { Add } from "@mui/icons-material";
+import CreateTodoPopup from "../components/todo/CreateTodoPopUp";
+import { useState } from "react";
 
 const Dashboard = () => {
+  const [isTodoPopupOpen, setIsTodoPopupOpen] = useState(false);
+  const handleOpenPopup = () => setIsTodoPopupOpen(true);
+  const handleClosePopup = () => setIsTodoPopupOpen(false);
   return (
     <>
       <AppDrawer />
@@ -20,11 +25,16 @@ const Dashboard = () => {
       >
         <TodoList />
       </Box>
+      <CreateTodoPopup
+        isPopupOpen={isTodoPopupOpen}
+        onClose={handleClosePopup}
+      />
       <Fab
         title="Add Todo"
         variant="circular"
         color="primary"
         sx={{ position: "fixed", bottom: 30, right: 30 }}
+        onClick={handleOpenPopup}
       >
         <Add />
       </Fab>

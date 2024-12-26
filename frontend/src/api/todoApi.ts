@@ -11,7 +11,7 @@ const createTodo = async (todo: Todo) => {
   return response.data;
 };
 
-const updateTodo = async (todo: Todo) => {
+const updateTodo = async (todo: Partial<Todo>) => {
   const response = await axiosInstance.put(`/todo/${todo.id}`, todo);
   return response.data;
 };

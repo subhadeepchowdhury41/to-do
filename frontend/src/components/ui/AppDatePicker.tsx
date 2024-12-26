@@ -20,6 +20,7 @@ const AppDatePicker = ({ label, ...props }: AppDatePickerProps) => {
       onChange={(value) => helpers.setValue(value)}
       slotProps={{
         textField: {
+          size: "small",
           fullWidth: true,
           error: Boolean(meta.touched && meta.error),
           helperText: meta.touched && meta.error ? meta.error : "",
