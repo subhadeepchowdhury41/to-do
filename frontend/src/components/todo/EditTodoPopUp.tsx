@@ -11,14 +11,14 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   Typography,
-  MenuItem,
-  useMediaQuery,
   useTheme,
+  useMediaQuery,
+  MenuItem,
 } from "@mui/material";
 import AppDatePicker from "../ui/AppDatePicker";
 import * as Yup from "yup";
 import { enqueueSnackbar } from "notistack";
-import { createTodoThunk } from "../../features/todo/todoSlice";
+import { updateTodoThunk } from "../../features/todo/todoSlice";
 import Grow from "@mui/material/Grow";
 import {
   Check,
@@ -26,8 +26,9 @@ import {
   FastForward,
   Refresh,
 } from "@mui/icons-material";
+import { Todo } from "../../types/todo.type";
 
-const createTodoSchema = Yup.object().shape({
+const editTodoSchema = Yup.object().shape({
   title: Yup.string().required("Title is required"),
   description: Yup.string().optional(),
   duedate: Yup.date().required("Due date is required"),
@@ -36,26 +37,34 @@ const createTodoSchema = Yup.object().shape({
     .oneOf(["TODO", "IN_PROGRESS", "DONE"], "Invalid status"),
 });
 
-const CreateTodoPopup = ({
+const EditTodoPopup = ({
   isPopupOpen,
   onClose,
+  todo,
 }: {
   isPopupOpen: boolean;
   onClose: () => void;
+  todo: Partial<Todo>;
 }) => {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const dispatch = useAppDispatch();
-  const handleCreateTodo = (values: {
+  const handleEditTodo = (values: {
     title: string;
     description: string;
     duedate: string;
     status: "TODO" | "IN_PROGRESS" | "DONE";
   }) => {
-    dispatch(createTodoThunk({ ...values, duedate: new Date(values.duedate) }))
+    dispatch(
+      updateTodoThunk({
+        id: todo.id,
+        ...values,
+        duedate: new Date(values.duedate),
+      })
+    )
       .unwrap()
       .then(() => {
-        enqueueSnackbar("Todo added Successfully", { variant: "success" });
+        enqueueSnackbar("Todo updated successfully", { variant: "success" });
         onClose();
       })
       .catch((error) => {
@@ -68,27 +77,27 @@ const CreateTodoPopup = ({
       <Dialog
         open={isPopupOpen}
         onClose={handleClosePopup}
-        aria-labelledby="create-todo-dialog"
+        aria-labelledby="edit-todo-dialog"
         TransitionComponent={Grow}
         maxWidth="sm"
         fullWidth
       >
         <DialogTitle
-          id="create-todo-dialog"
+          id="edit-todo-dialog"
           sx={{ fontSize: "1.5rem", fontWeight: "bold" }}
         >
-          Create a Todo
+          Edit Todo
         </DialogTitle>
         <DialogContent>
           <Formik
             initialValues={{
-              title: "",
-              description: "",
-              duedate: String(new Date()),
-              status: "TODO",
+              title: todo.title!,
+              description: todo.description || "",
+              duedate: String(new Date(todo.duedate!)),
+              status: todo.status!,
             }}
-            validationSchema={createTodoSchema}
-            onSubmit={handleCreateTodo}
+            validationSchema={editTodoSchema}
+            onSubmit={handleEditTodo}
             validateOnChange
           >
             {({ values, setFieldValue, resetForm }) => (
@@ -130,9 +139,14 @@ const CreateTodoPopup = ({
                 />
                 <AppDatePicker name="duedate" label="Due Date" />
                 {isSm ? (
-                  <AppTextField select name="status" label="Status" size="small" sx={{mt: 2}}>
-                    <MenuItem value="TODO">
-                    Todo</MenuItem>
+                  <AppTextField
+                    select
+                    name="status"
+                    label="Status"
+                    size="small"
+                    sx={{ mt: 2 }}
+                  >
+                    <MenuItem value="TODO">Todo</MenuItem>
                     <MenuItem value="IN_PROGRESS">In Progress</MenuItem>
                     <MenuItem value="DONE">Done</MenuItem>
                   </AppTextField>
@@ -209,7 +223,7 @@ const CreateTodoPopup = ({
                       variant="contained"
                       color="primary"
                     >
-                      Create
+                      Save
                     </Button>
                   </div>
                 </DialogActions>
@@ -222,4 +236,4 @@ const CreateTodoPopup = ({
   );
 };
 
-export default CreateTodoPopup;
+export default EditTodoPopup;

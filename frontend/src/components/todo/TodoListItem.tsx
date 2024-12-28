@@ -1,4 +1,4 @@
-import { EventOutlined, MoreHoriz } from "@mui/icons-material";
+import { CommentOutlined, EventOutlined, MoreHoriz } from "@mui/icons-material";
 import {
   Paper,
   Box,
@@ -9,17 +9,25 @@ import {
   MenuItem,
   Button,
   Divider,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import { MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { Todo } from "../../types/todo.type";
 import { formatDate } from "../../utils/formatDate";
 import { DateCalendar } from "@mui/x-date-pickers";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { updateTodoThunk } from "../../features/todo/todoSlice";
+import {
+  deleteTodoThunk,
+  updateTodoThunk,
+} from "../../features/todo/todoSlice";
 import { enqueueSnackbar } from "notistack";
 import dayjs from "dayjs";
+import EditTodoPopup from "./EditTodoPopUp";
+import { getStatusColor } from "../../utils/theme";
 
 const TodoListItem = ({ todo }: { todo: Todo }) => {
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const moreMenuOpen = Boolean(anchorEl);
@@ -27,6 +35,33 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
   const dueDateOpen = Boolean(anchorEl2);
   const [hovering, setHovering] = useState(false);
   const [newDuedate, setNewDuedate] = useState<Date | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+  const handleCheckMarkChange = (
+    _: ChangeEvent<HTMLInputElement>,
+    checked: boolean
+  ) => {
+    dispatch(
+      updateTodoThunk({
+        id: todo.id,
+        status: checked ? "DONE" : "TODO",
+      })
+    )
+      .unwrap()
+      .then(() => {
+        enqueueSnackbar("Todo updated Successfully", { variant: "success" });
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: "error" });
+      });
+  };
+  const handleEditOpenOpen = () => {
+    setEditOpen(true);
+  };
+  const handleEditOpenClose = () => {
+    handleMouseLeave();
+    setEditOpen(false);
+  };
   const handleDuedateChange = (val: Date) => {
     setNewDuedate(val);
   };
@@ -42,6 +77,8 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
       .then(() => {
         setNewDuedate(null);
         handleDueDateClose();
+        handleMouseLeave();
+        handleMoreMenuClose();
         enqueueSnackbar("Duedate updated Successfully", { variant: "success" });
       })
       .catch((err) => {
@@ -66,7 +103,19 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
     setHovering(true);
   };
   const handleMouseLeave = () => {
+    setAnchorEl(null);
     setHovering(false);
+  };
+  const handleDelete = () => {
+    dispatch(deleteTodoThunk(todo.id!))
+      .unwrap()
+      .then(() => {
+        handleMoreMenuClose();
+        enqueueSnackbar("Todo deleted successfully", { variant: "success" });
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: "error" });
+      });
   };
   return (
     <Paper
@@ -74,7 +123,7 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       sx={{
-        width: "70%",
+        width: isSmall ? "95%" : "70%",
         backgroundColor: "background.paper",
         borderBottom: `1px solid`,
         borderColor: (theme) => theme.palette.divider,
@@ -84,6 +133,7 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
         paddingY: 1,
         gap: 0.5,
         cursor: "pointer",
+        position: "relative",
       }}
     >
       <Box
@@ -93,55 +143,100 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
           justifyContent: "start",
         }}
       >
-        <Checkbox />
+        <Checkbox checked={todo.status === "DONE"} onChange={handleCheckMarkChange} />
       </Box>
       <Box
         sx={{
-          flexGrow: 1,
+          width: isSmall ? "60%" : "75%",
           gap: 1,
         }}
       >
-        <Typography
-          variant="body1"
-          sx={{
-            color: "text.primary",
-          }}
-        >
-          {todo.title}
-        </Typography>
+        <Box sx={{ display: "flex" }}>
+          <Typography
+            variant="body1"
+            noWrap
+            sx={{
+              color: "text.primary",
+            }}
+          >
+            {todo.title}
+          </Typography>
+        </Box>
         {todo.description && todo.description !== "" && (
-          <Typography variant="subtitle1">{todo.description}</Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              width: "75%",
+              display: "-webkit-box",
+              overflow: "hidden",
+              WebkitBoxOrient: "vertical",
+              textOverflow: "ellipsis",
+              WebkitLineClamp: 2,
+            }}
+          >
+            {todo.description}
+          </Typography>
         )}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 0.75,
-            color: "secondary.main",
-            paddingY: 0.5,
-          }}
-        >
-          <EventOutlined fontSize="small" />
-          <div onClick={handleDueDateOpen}>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0.75,
+              color: "secondary.main",
+              paddingY: 0.5,
+            }}
+          >
+            <EventOutlined fontSize="small" />
+            <div onClick={handleDueDateOpen}>
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  "&:hover": {
+                    textDecoration: "underline",
+                    color: "lightsteelblue",
+                  },
+                }}
+              >
+                {formatDate(todo.duedate)}
+              </Typography>
+            </div>
+          </Box>
+          <Box
+            sx={{
+              border: "1px solid",
+              borderColor: getStatusColor(todo.status),
+              borderRadius: "4px",
+              paddingY: 0.25,
+              paddingX: 0.5,
+              scale: 0.85,
+            }}
+          >
             <Typography
               variant="subtitle2"
               sx={{
-                "&:hover": {
-                  textDecoration: "underline",
-                  color: "lightsteelblue",
-                },
+                textTransform: "capitalize",
+                color: getStatusColor(todo.status),
               }}
             >
-              {formatDate(todo.duedate)}
+              {String(todo.status).replace("_", " ").toLowerCase()}
             </Typography>
-          </div>
+          </Box>
         </Box>
       </Box>
       {hovering && (
-        <Box sx={{ justifySelf: "flex-end" }}>
-          <IconButton onClick={handleMoreMenuOpen} sx={{ borderRadius: "4px" }}>
-            <MoreHoriz fontSize="small" />
-          </IconButton>
+        <Box sx={{ position: "absolute", right: 0 }}>
+          <Box sx={{ display: "flex", gap: 0.5 }}>
+            <IconButton sx={{ borderRadius: "4px" }}>
+              <CommentOutlined fontSize="small" />
+            </IconButton>
+            <IconButton
+              onClick={handleMoreMenuOpen}
+              sx={{ borderRadius: "4px" }}
+            >
+              <MoreHoriz fontSize="small" />
+            </IconButton>
+          </Box>
         </Box>
       )}
       <Menu
@@ -153,10 +248,10 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
         }}
         onClose={handleMoreMenuClose}
       >
-        <MenuItem>
+        <MenuItem onClick={handleEditOpenOpen}>
           <Typography variant="body2">Edit</Typography>
-        </MenuItem>
-        <MenuItem>
+        </MenuItem> 
+        <MenuItem onClick={handleDelete}>
           <Typography variant="body2">Delete</Typography>
         </MenuItem>
       </Menu>
@@ -194,6 +289,11 @@ const TodoListItem = ({ todo }: { todo: Todo }) => {
           </Button>
         </Box>
       </Menu>
+      <EditTodoPopup
+        isPopupOpen={editOpen}
+        onClose={handleEditOpenClose}
+        todo={todo}
+      />
     </Paper>
   );
 };

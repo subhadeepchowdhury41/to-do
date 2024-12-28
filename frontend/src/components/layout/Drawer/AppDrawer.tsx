@@ -1,16 +1,18 @@
 import {
   Avatar,
   Box,
+  Button,
   Drawer,
   IconButton,
   List,
   Typography,
 } from "@mui/material";
-import { appDrawerWidth } from "../../../utils/theme";
+import { appDrawerWidth, appNavbarHeight } from "../../../utils/theme";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import {
   Dashboard as DashboardIcon,
   KeyboardArrowDown,
+  Logout,
   NotificationsOutlined,
   Today,
   TodayOutlined,
@@ -18,23 +20,57 @@ import {
   UpcomingOutlined,
 } from "@mui/icons-material";
 import DrawerItem from "./DrawerItem";
+import { useState } from "react";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { logoutThunk } from "../../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
 
-const AppDrawer = () => {
+const AppDrawer = ({
+  isSm = false,
+  mobileMenuOpen = false,
+  handleMobileMenuClose,
+}: {
+  isSm?: boolean;
+  mobileMenuOpen?: boolean;
+  handleMobileMenuClose: () => void;
+}) => {
   const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [currentRoute, setCurrentRoute] = useState("/dashboard");
+  const handleSignout = () => {
+    dispatch(logoutThunk())
+      .unwrap()
+      .then(() => {
+        enqueueSnackbar("Successfully logged out", { variant: "success" });
+        navigate("/login");
+      })
+      .catch((err) => {
+        enqueueSnackbar(err, { variant: "error" });
+      });
+  };
   return (
     <>
       <Drawer
-        variant="permanent"
+        variant={isSm ? "temporary" : "permanent"}
         sx={{
           width: appDrawerWidth,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
+            paddingTop: isSm ? `${appNavbarHeight}px` : 0,
             width: appDrawerWidth,
             borderRight: "none",
             boxSizing: "border-box",
             backgroundColor: "background.default",
+            zIndex: 5,
           },
         }}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        open={mobileMenuOpen}
+        onClose={handleMobileMenuClose}
       >
         {/* Drawer Header */}
         <Box
@@ -90,7 +126,7 @@ const AppDrawer = () => {
                 }}
               >
                 <Typography variant="subtitle1" noWrap>
-                  Subhaddeep
+                  {user?.name}
                 </Typography>
               </Box>
             </Box>
@@ -118,6 +154,7 @@ const AppDrawer = () => {
             alignItems: "flex-start",
             justifyContent: "start",
             paddingX: 1,
+            flexGrow: 1,
           }}
         >
           <DrawerItem
@@ -125,23 +162,50 @@ const AppDrawer = () => {
             highlightedIcon={<DashboardIcon fontSize="small" />}
             title="Dashboard"
             path="/dashboard"
-            highlighted
+            onClick={() => setCurrentRoute("/dashboard")}
+            highlighted={currentRoute === "/dashboard"}
           />
           <DrawerItem
             icon={<TodayOutlined fontSize="small" />}
             highlightedIcon={<Today fontSize="small" />}
             title="Today"
             path="/today"
+            onClick={() => setCurrentRoute("/today")}
+            highlighted={currentRoute === "/today"}
           />
           <DrawerItem
             icon={<UpcomingOutlined fontSize="small" />}
             highlightedIcon={<Upcoming fontSize="small" />}
             title="Upcoming"
             path="/upcoming"
+            onClick={() => setCurrentRoute("/upcoming")}
+            highlighted={currentRoute === "/upcoming"}
           />
         </List>
-
-        
+        <Box sx={{ padding: 1 }}>
+          <Button
+            onClick={handleSignout}
+            color="error"
+            size="small"
+            sx={{
+              display: "flex",
+              gap: 1.5,
+              alignItems: "center",
+              paddingY: 1,
+              paddingX: 2,
+              width: "100%",
+              cursor: "pointer",
+              ["&:hover"]: {
+                backgroundColor: (theme) => theme.palette.action.hover,
+              },
+            }}
+          >
+            <Logout />
+            <Typography variant="body2" color="error">
+              Logout
+            </Typography>
+          </Button>
+        </Box>
       </Drawer>
     </>
   );

@@ -12,16 +12,19 @@ const DrawerItem = ({
   highlighted,
   title,
   path,
+  onClick,
 }: {
   icon: React.ReactNode;
   highlightedIcon: React.ReactNode;
   title: string;
   path: string;
   highlighted?: boolean;
+  onClick?: () => void;
 }) => {
   return (
     <ListItem component={Link} to={path} disablePadding sx={{ mt: 1 }}>
       <ListItemButton
+        onClick={onClick}
         dense
         sx={{
           borderRadius: "4px",

@@ -2,35 +2,35 @@ import { createTheme } from "@mui/material";
 
 const todoLightTheme = createTheme({
   palette: {
-    mode: "light", // Can toggle to 'dark' for dark mode
+    mode: "light",
     primary: {
-      main: "#4CAF50", // Emerald Green for main buttons/actions
-      contrastText: "#FFFFFF", // White for text on primary
+      main: "#4CAF50",
+      contrastText: "#FFFFFF",
     },
     secondary: {
-      main: "#FFC107", // Amber for secondary actions
-      contrastText: "#212121", // Charcoal for secondary text
+      main: "#FFC107",
+      contrastText: "#212121",
     },
     background: {
-      default: "#F7F8FA", // Light gray for background
-      paper: "#FFFFFF", // White for cards/containers
+      default: "#F7F8FA",
+      paper: "#FFFFFF",
     },
     text: {
-      primary: "#212121", // Main text color
-      secondary: "#757575", // Subtext or placeholders
+      primary: "#212121",
+      secondary: "#757575",
     },
     error: {
-      main: "#FF5252", // Coral Red for error states
+      main: "#FF5252",
     },
     success: {
       main: "#8BC34A",
     },
-    divider: "#E0E0E0", // Soft gray for dividers
+    divider: "#E0E0E0",
     grey: {
-      "400": "#FFFFFF", // Light gray for background
+      "400": "#FFFFFF",
     },
     action: {
-      hover: "#F0F0F0", // Light gray for hover
+      hover: "#F0F0F0",
     },
   },
   typography: {
@@ -76,21 +76,21 @@ const todoLightTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "4px", // Rounded buttons
-          textTransform: "none", // Disable uppercase text
+          borderRadius: "4px",
+          textTransform: "none",
         },
         containedPrimary: {
           backgroundColor: "#4CAF50",
           color: "#FFFFFF",
           "&:hover": {
-            backgroundColor: "#388E3C", // Slightly darker green
+            backgroundColor: "#388E3C",
           },
         },
         containedSecondary: {
           backgroundColor: "#FFC107",
           color: "#212121",
           "&:hover": {
-            backgroundColor: "#FFA000", // Slightly darker amber
+            backgroundColor: "#FFA000",
           },
         },
       },
@@ -98,8 +98,8 @@ const todoLightTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: "12px", // Rounded corners for cards
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)", // Soft shadow
+          borderRadius: "12px",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
         },
       },
     },
@@ -108,30 +108,30 @@ const todoLightTheme = createTheme({
 
 const todoDarkTheme = createTheme({
   palette: {
-    mode: "dark", // Indicates dark mode
+    mode: "dark",
     primary: {
-      main: "#4CAF50", // Emerald Green for main buttons/actions
-      contrastText: "#FFFFFF", // White for text on primary
+      main: "#4CAF50",
+      contrastText: "#FFFFFF",
     },
     secondary: {
-      main: "#FFC107", // Amber for secondary actions
-      contrastText: "#B0B0B0", // Charcoal for secondary text
+      main: "#FFC107",
+      contrastText: "#B0B0B0",
     },
     background: {
-      default: "#121212", // Dark gray for background
-      paper: "#1E1E1E", // Slightly lighter gray for cards/containers
+      default: "#121212",
+      paper: "#1E1E1E",
     },
     text: {
-      primary: "#FFFFFF", // White for main text
-      secondary: "#B0B0B0", // Light gray for subtext or placeholders
+      primary: "#FFFFFF",
+      secondary: "#B0B0B0",
     },
     error: {
-      main: "#FF5252", // Coral Red for error states
+      main: "#FF5252",
     },
     success: {
-      main: "#8BC34A", // Light Green for success
+      main: "#8BC34A",
     },
-    divider: "#333333", // Dark gray for dividers
+    divider: "#333333",
   },
   typography: {
     fontFamily: `'Roboto', 'Arial', sans-serif`,
@@ -168,21 +168,21 @@ const todoDarkTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "4px", // Rounded buttons
-          textTransform: "none", // Disable uppercase text
+          borderRadius: "4px",
+          textTransform: "none",
         },
         containedPrimary: {
           backgroundColor: "#4CAF50",
           color: "#FFFFFF",
           "&:hover": {
-            backgroundColor: "#388E3C", // Slightly darker green
+            backgroundColor: "#388E3C",
           },
         },
         containedSecondary: {
           backgroundColor: "#FFC107",
           color: "#212121",
           "&:hover": {
-            backgroundColor: "#FFA000", // Slightly darker amber
+            backgroundColor: "#FFA000",
           },
         },
       },
@@ -190,8 +190,8 @@ const todoDarkTheme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: "12px", // Rounded corners for cards
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)", // Stronger shadow
+          borderRadius: "12px",
+          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)",
         },
       },
     },
@@ -200,6 +200,17 @@ const todoDarkTheme = createTheme({
 
 export const appDrawerWidth = 280;
 export const appNavbarHeight = 64;
+
+export const getStatusColor = (status: string) => {
+  switch (status) {
+    case "IN_PROGRESS":
+      return "#FFC107";
+    case "DONE":
+      return "#4CAF50";
+    default:
+      return "gray";
+  }
+};
 
 export default {
   light: todoLightTheme,

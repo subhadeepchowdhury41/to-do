@@ -4,13 +4,25 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
+import Home from "./pages/Home";
+import Today from "./pages/Today";
 
 const router = createBrowserRouter([
   {
-    path: "/dashboard",
+    path: "",
+    children: [
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "/today",
+        element: <Today />,
+      },
+    ],
     element: (
       <PrivateRoute>
-        <Dashboard />
+        <Home />
       </PrivateRoute>
     ),
   },
