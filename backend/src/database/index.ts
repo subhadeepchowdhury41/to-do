@@ -2,17 +2,21 @@ import { DataSource } from "typeorm";
 import { User } from "./entities/user.entity";
 import { RefreshToken } from "./entities/refreshToken";
 import { Todo } from "./entities/todo.entity";
+import { isLocal } from "../utils/helper/isLocal";
+
+const { DB_NAME, DB_USER, DB_PASS, DB_HOST, SSL_MODE } = process.env;
 
 const appDataSource = new DataSource({
   type: "postgres",
-  database: "todo",
-  host: "172.27.210.131",
+  database: isLocal() ? "todo" : DB_NAME,
+  host: isLocal() ? "172.27.210.131" : DB_HOST,
   port: 5432,
-  username: "postgres",
-  password: "subha",
+  username: isLocal() ? "postgres" : DB_USER,
+  password: isLocal() ? "subha" : DB_PASS,
   synchronize: true,
-  logging: false,
+  logging: isLocal() ? true : false,
   entities: [User, RefreshToken, Todo],
+  ssl: isLocal() ? false : { rejectUnauthorized: false },
 });
 
 export const initializeDatabase = async () => {
