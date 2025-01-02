@@ -4,7 +4,7 @@ import { RefreshToken } from "./entities/refreshToken";
 import { Todo } from "./entities/todo.entity";
 import { isLocal } from "../utils/helper/isLocal";
 
-const { DB_NAME, DB_USER, DB_PASS, DB_HOST, SSL_MODE } = process.env;
+const { DB_NAME, DB_USER, DB_PASS, DB_HOST } = process.env;
 
 const appDataSource = new DataSource({
   type: "postgres",

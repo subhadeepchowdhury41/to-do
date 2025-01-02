@@ -10,8 +10,12 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/auth', authRouter);
-app.use('/user', userRouter);
-app.use('/todo', todoRouter);
+app.get("/", (req, res) => {
+  res.send("Welcome to TODO backend.");
+});
+
+app.use("/auth", authRouter);
+app.use("/user", userRouter);
+app.use("/todo", todoRouter);
 
 export default app;
