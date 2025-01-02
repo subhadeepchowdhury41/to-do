@@ -27,7 +27,7 @@
   "scripts": {
     "dev": "nodemon",
     "start": "ts-node src/index.ts",
-    "compile": "tsc"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
