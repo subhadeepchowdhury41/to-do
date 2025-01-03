@@ -3,7 +3,7 @@ import { useAppDispatch } from "../hooks/useAppDispatch";
 import { loginThunk } from "../features/auth/authSlice";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { LoadingButton } from "@mui/lab";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -81,6 +81,12 @@ const Login = () => {
                 >
                   Login
                 </LoadingButton>
+                <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                  <Typography variant="body2">
+                    Don&apos;t have an account?{" "}
+                    <Link to="/signup">Sign up</Link>
+                  </Typography>
+                </Box>
               </Form>
             </Formik>
           </Box>
