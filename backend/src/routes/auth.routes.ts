@@ -64,6 +64,7 @@ router.post("/refresh", isValidRefreshToken, async (req, res) => {
 router.post("/logout", isValidRefreshToken, async (req, res) => {
   try {
     const result = await authController.logout(req.body.mutated.refreshTokenId);
+    console.log(result);
     res.status(result.status).send(result);
   } catch (error: any) {
     sendErrorResponse(res, error);

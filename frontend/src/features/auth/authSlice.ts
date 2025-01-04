@@ -67,6 +67,9 @@ export const signupThunk = createAsyncThunk(
   async (payload: SignupPayload, { rejectWithValue }) => {
     try {
       const response = await AppRestAPI.auth.signup(payload);
+      localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
+      console.log(response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Signup failed");
@@ -78,11 +81,13 @@ export const logoutThunk = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      await AppRestAPI.auth.logout();
+      const refreshToken = localStorage.getItem("refreshToken");
+      await AppRestAPI.auth.logout(refreshToken);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       return null;
     } catch (error: any) {
+      console.log(error);
       return rejectWithValue(error.response?.data?.message || "Logout failed");
     }
   }

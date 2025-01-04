@@ -37,8 +37,10 @@ const signup = async ({
   return response.data;
 };
 
-const logout = async () => {
-  const response = await axiosInstance.post("/auth/logout");
+const logout = async (refreshToken: string) => {
+  const response = await axiosInstance.post("/auth/logout", {
+    refreshToken,
+  });
   return response.data;
 };
 

@@ -13,7 +13,9 @@ import { AppThemeProvider } from "./hooks/useAppTheme";
 const App = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(meThunk());
+    setTimeout(() => {
+      dispatch(meThunk());
+    }, 1200);
   }, []);
   return (
     <>

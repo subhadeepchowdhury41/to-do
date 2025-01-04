@@ -23,7 +23,6 @@ import DrawerItem from "./DrawerItem";
 import { useState } from "react";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { logoutThunk } from "../../../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 
 const AppDrawer = ({
@@ -37,14 +36,12 @@ const AppDrawer = ({
 }) => {
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const [currentRoute, setCurrentRoute] = useState("/dashboard");
   const handleSignout = () => {
     dispatch(logoutThunk())
       .unwrap()
       .then(() => {
         enqueueSnackbar("Successfully logged out", { variant: "success" });
-        navigate("/login");
       })
       .catch((err) => {
         enqueueSnackbar(err, { variant: "error" });
