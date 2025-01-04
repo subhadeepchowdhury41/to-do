@@ -82,7 +82,7 @@ export const logoutThunk = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const refreshToken = localStorage.getItem("refreshToken");
-      await AppRestAPI.auth.logout(refreshToken);
+      await AppRestAPI.auth.logout(refreshToken!);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       return null;
