@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, Container } from "@mui/material";
+import { Box, Typography, Container } from "@mui/material";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { loginThunk } from "../features/auth/authSlice";
 import { useAppSelector } from "../hooks/useAppSelector";
@@ -8,6 +8,7 @@ import { enqueueSnackbar } from "notistack";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import AppTextField from "../components/ui/AppTextField";
+import LoginBgSvg from "../assets/login_bg.svg";
 
 const Login = () => {
   const auth = useAppSelector((state) => state.auth);
@@ -34,30 +35,37 @@ const Login = () => {
       .min(4, "Password must be at least 4 characters"),
   });
   return (
-    <Container maxWidth="sm">
-      <Box
+    <Box sx={{ display: "flex", justifyContent: "space-between", bgcolor: theme => theme.palette.background.default }}>
+      <Container
         sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          width: {
+            md: "45%",
+          },
+          display: {
+            md: "flex",
+          },
+          height: "100vh",
+          alignItems: {
+            md: "center",
+          },
         }}
       >
-        <Paper
-          elevation={3}
+        <Box
           sx={{
-            p: 4,
-            width: "100%",
+            width: '100%',
+            marginTop: 8,
             display: "flex",
             flexDirection: "column",
-            gap: 2,
           }}
         >
-          <Typography component="h1" variant="h5" align="center">
-            Login
+          <Typography component="h1" variant="h1" align="left" sx={{fontWeight: 'bold', fontSize: 45}}>
+            Welcome Back
+          </Typography>
+          <Typography component="h2" variant="h6" align="left" sx={{color: "secondary.contrastText", fontWeight: 'thin'}}>
+            Organize your tasks and projects. Get things done.
           </Typography>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", mt: 4, gap: 2 }}>
             <Formik
               initialValues={{ email: "", password: "" }}
               validationSchema={validationSchema}
@@ -90,9 +98,21 @@ const Login = () => {
               </Form>
             </Formik>
           </Box>
-        </Paper>
-      </Box>
-    </Container>
+        </Box>
+      </Container>
+      <Container
+        sx={{
+          width: "45%",
+          display: { xs: "none", md: "flex" },
+          alignItems: {
+            md: "center",
+          },
+          height: "100vh",
+        }}
+      >
+        <img src={LoginBgSvg} alt="Login" />
+      </Container>
+    </Box>
   );
 };
 
